@@ -16,7 +16,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: read
 
@@ -46,8 +46,8 @@ jobs:
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
     - name: Descargar JavaFx
       run: |
-        wget https://download2.gluonhq.com/openjfx/21.0.10/openjfx-21.0.10_linux-x64_bin-sdk.zip
-        unzip openjfx-21.0.10_linux-x64_bin-sdk.zip -d javafx-sdk
+        Invoke-WebRequest -Uri https://download2.gluonhq.com/openjfx/21.0.10/openjfx-21.0.10_windows-x64_bin-sdk.zip -OutFile openjfx.zip
+        Expand-Archive -Path openjfx.zip -DestinationPath javafx-sdk
 
     - name: Compilar
       run:  javac --module-path javafx-sdk/javafx-sdk-21.0.10/lib --add-modules javafx.controls -d build/ src/dam/optativa/HelloWorldFx.java
@@ -60,10 +60,10 @@ jobs:
 
     - name: Crear ejecutable
       run: |
-        jpackage --input build/ \
-          --name HelloWorldFx \
-          --main-jar HelloWorldFx.jar \
-          --main-class dam.optativa.HelloWorldFx \
-          --type deb \
-          --module-path javafx-sdk/javafx-sdk-21.0.10/lib \
+        jpackage --input build/ `
+          --name HelloWorldFx `
+          --main-jar HelloWorldFx.jar `
+          --main-class dam.optativa.HelloWorldFx `
+          --type exe `
+          --module-path javafx-sdk/javafx-sdk-21.0.10/lib `
           --add-modules javafx.controls
