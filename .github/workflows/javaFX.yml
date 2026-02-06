@@ -54,7 +54,7 @@ jobs:
 
     - name: Crear JAR
       run: jar --create --file=build/HelloWorldFx.jar --manifest=manifest/MANIFEST.MF -C build/ .
-
+#
     - name: Ejecutar
       run: java --module-path javafx-sdk/javafx-sdk-21.0.10/lib --add-modules javafx.controls -jar build/HelloWorldFx.jar
 
