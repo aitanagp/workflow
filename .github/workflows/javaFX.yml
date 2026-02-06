@@ -13,10 +13,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+#on:
+ # push:
+  #  tags:
+   #   - "v*"
+#permissions:
+  #contents: write
+
+
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read
 
@@ -46,11 +54,11 @@ jobs:
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
     - name: Descargar JavaFx
       run: |
-        Invoke-WebRequest -Uri https://download2.gluonhq.com/openjfx/21.0.10/openjfx-21.0.10_windows-x64_bin-sdk.zip -OutFile openjfx.zip
-        Expand-Archive -Path openjfx.zip -DestinationPath javafx-sdk
+        wget https://download2.gluonhq.com/openjfx/21.0.10/openjfx-21.0.10_linux-x64_bin-sdk.zip
+        unzip openjfx-21.0.10_linux-x64_bin-sdk.zip -d javafx-sdkk
 
     - name: Compilar
-      run:  javac --module-path javafx-sdk/javafx-sdk-21.0.10/lib --add-modules javafx.controls -d build/ src/dam/optativa/HelloWorldFx.java
+      run:  javac --module-path <path_to_javafx_lib> --add-modules javafx.controls -d build/ src/dam/optativa/HelloWorldFx.java
 
     - name: Crear JAR
       run: jar --create --file=build/HelloWorldFx.jar --manifest=manifest/MANIFEST.MF -C build/ .
@@ -64,6 +72,18 @@ jobs:
           --name HelloWorldFx `
           --main-jar HelloWorldFx.jar `
           --main-class dam.optativa.HelloWorldFx `
-          --type exe `
+          --type deb `
           --module-path javafx-sdk/javafx-sdk-21.0.10/lib `
           --add-modules javafx.controls
+
+#- name: Upload executable
+ #     uses: actions/upload-artifact@v4
+  #    with: 
+   #     name: HelloWorldFx-Executable
+    #    path: HelloWorldFx.exe
+#
+ #   - name: Release
+  #    uses: softprops/action-gh-release@v2
+    # if: github.ref_type == 'tag'
+    #  with:
+    #    files: "*.exe"
